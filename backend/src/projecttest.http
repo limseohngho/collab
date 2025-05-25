@@ -1,0 +1,198 @@
+
+###토큰
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NzI3OTY1MiwiZXhwIjoxNzQ3MjgzMjUyfQ.m6iGAh-iVeNoNwNFh-d1HmjrS6zv_hyuBwSNSS2v850
+
+######################### 회원 관리 ###############################
+
+### 로그인
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test1@email.com",
+  "password": "1234"
+}
+
+### 회원가입
+POST http://localhost:5000/api/auth/signup
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "password": "newpassword123",
+  "email": "newuser@example.com"
+}
+
+### 회원 정보 조회
+GET http://localhost:5000/api/users/me
+Authorization: Bearer {{token}}
+
+######################## 프로젝트 관리 ################################
+
+### 프로젝트 생성
+POST http://localhost:5000/api/projects
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "New Project",
+  "description": "This is a new project."
+}
+
+### 프로젝트 조회
+GET http://localhost:5000/api/projects
+Authorization: Bearer {{token}}
+
+### 프로젝트 삭제
+DELETE http://localhost:5000/api/projects/1
+Authorization: Bearer {{token}}
+
+### 프로젝트 수정
+PUT http://localhost:5000/api/projects/3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NzIzMDIxNiwiZXhwIjoxNzQ3MjMzODE2fQ.pO7jRQ3evyCP2sgwgHCcjMtihgkjeuN0bLMeeX45NDI
+
+{
+  "name": "수정된 프로젝트 이름",
+  "description": "수정된 설명입니다."
+}
+
+######################## 팀원 관리 ############################
+
+### 팀원 추가
+POST http://localhost:5000/api/project-members/add
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "projectId": 1,
+  "userId": 2,
+  "role": "member"
+}
+
+### 팀원 삭제
+DELETE http://localhost:5000/api/project-members/remove
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "projectId": 1,
+  "userId": 2
+}
+
+###################### 작업 컬럼 관리 ############################
+
+### 컬럼 생성
+POST http://localhost:5000/api/task-columns
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "projectId": 3,
+  "name": "Done",
+  "position": 2
+}
+
+### 컬럼 조회
+GET http://localhost:5000/api/task-columns/3
+Authorization: Bearer {{token}}
+
+### 컬럼 수정
+PUT http://localhost:5000/api/task-columns/4
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Done",
+  "position": 3
+}
+
+### 컬럼 삭제
+DELETE http://localhost:5000/api/task-columns/3
+Authorization: Bearer {{token}}
+
+############################# 작업 관리 #############################
+
+### Task 생성
+POST http://localhost:5000/api/tasks
+Content-Type: application/json
+
+{
+  "columnId": 4,
+  "title": "New Task3",
+  "description": "This is a new task3.",
+  "position": 1
+}
+
+### 특정 컬럼의 Task 조회
+GET http://localhost:5000/api/tasks/column/4
+
+### Task 수정
+PUT http://localhost:5000/api/tasks/3
+Content-Type: application/json
+
+{
+  "title": "Updated Task",
+  "description": "This task has been updated.",
+  "position": 2
+}
+
+### Task 삭제
+DELETE http://localhost:5000/api/tasks/1
+
+### Task 위치/컬럼 이동
+PUT http://localhost:5000/api/tasks/move/3
+Content-Type: application/json
+
+{
+  "newColumnId": 4,
+  "newPosition": 2
+}
+
+############## 캘린더 이벤트 #########################
+
+### 이벤트 생성
+POST http://localhost:5000/api/events
+Content-Type: application/json
+
+{
+  "projectId": 3,
+  "title": "test title",
+  "startTime": "2025-05-15T14:00:00",
+  "endTime": "2025-05-16T15:00:00",
+  "description": "test desc",
+  "createdBy": 2
+}
+
+### 이벤트 조회
+GET http://localhost:5000/api/events/1
+
+### 이벤트 수정
+PUT http://localhost:5000/api/events/1
+Content-Type: application/json
+
+{
+  "title": "수정된 제목",
+  "startTime": "2025-05-16T14:00:00",
+  "endTime": "2025-05-17T15:30:00",
+  "description": "수정된 설명"
+}
+
+### 이벤트 삭제
+DELETE http://localhost:5000/api/events/2
+
+############################ 메시지 ###########################
+
+### 메시지 전송
+POST http://localhost:5000/api/messages
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "projectId": 1,
+  "message": "테스트 문장1"
+}
+
+### 메시지 수신
+GET http://localhost:5000/api/messages/3
+Authorization: Bearer {{token}}
