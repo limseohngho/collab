@@ -40,6 +40,12 @@ const Dashboard = () => {
     }
   };
 
+  // 프로젝트 클릭 시 상세페이지로 이동
+  const handleProjectClick = (proj) => {
+    // 상세페이지 경로는 /project/:id로 이동
+    navigate(`/project/${proj.id}`);
+  };
+
   return (
     <div className={styles.dashboardContainer}>
       {/* 사이드바: 프로필 + 내 프로젝트 */}
@@ -61,7 +67,7 @@ const Dashboard = () => {
               <li key={proj.id} className={styles.projectItem}>
                 <button
                   className={styles.projectButton}
-                  onClick={() => navigate(`/project/${proj.id}`)}
+                  onClick={() => handleProjectClick(proj)}
                 >
                   {proj.project_name}
                 </button>

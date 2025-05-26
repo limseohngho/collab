@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';  // AuthContext 불러오�
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Dashboard from './pages/Dashboard';
+import ProjectDetailPage from "./pages/ProjectDetailPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/project/:id" element={<ProjectDetailPage />} />
         </Routes>
       </AuthProvider>
     </Router>
