@@ -25,7 +25,22 @@ const removeMember = async (req, res) => {
   }
 };
 
+const getMembers = async (req, res) => {
+  const projectId = req.query.projectId;
+  if (!projectId) {
+    return res.status(400).json({ msg: 'projectId is required' });
+  }
+  try {
+    const members = await projectMemberService.getProjectMembers(projectId);
+    res.status(200).json(members);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
 module.exports = {
   addMember,
   removeMember,
+  getMembers,
 };

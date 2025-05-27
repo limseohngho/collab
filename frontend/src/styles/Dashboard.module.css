@@ -1,7 +1,7 @@
 .dashboardContainer {
   display: flex;
   min-height: 100vh;
-  background: #eaf6ff; /* 아주 밝은 파란색 배경 */
+  background: #eaf6ff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -32,12 +32,31 @@
   font-size: 22px;
   letter-spacing: -1px;
   color: #007bff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .profileBox p {
   margin: 4px 0;
   color: #333;
   font-size: 15px;
+}
+
+.logoutBtn {
+  background: #4da8ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 15px;
+  cursor: pointer;
+  transition: background 0.18s;
+  margin-left: 6px;
+}
+.logoutBtn:hover {
+  background: #1e90ff;
 }
 
 .projectsSection {

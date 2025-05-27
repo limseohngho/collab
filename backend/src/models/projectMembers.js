@@ -24,7 +24,20 @@ const removeMember = async (projectId, userId) => {
   return result;
 };
 
+const getMembersByProject = async (projectId) => {
+  // 유저 정보까지 조인해서 반환
+  const query = `
+    SELECT u.id, u.username, u.email, pm.role
+    FROM project_member pm
+    JOIN users u ON pm.user_id = u.id
+    WHERE pm.project_id = ?
+  `;
+  const [rows] = await db.query(query, [projectId]);
+  return rows;
+};
+
 module.exports = {
   addMember,
   removeMember,
+  getMembersByProject,
 };

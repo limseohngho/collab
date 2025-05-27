@@ -5,5 +5,6 @@ const { auth } = require('../middleware/auth');
 
 router.post('/add', auth, projectMemberController.addMember);
 router.delete('/remove', auth, projectMemberController.removeMember);
+router.get('/', auth, projectMemberController.getMembers);
 
 module.exports = router;

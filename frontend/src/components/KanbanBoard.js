@@ -1,112 +1,71 @@
 import React, { useEffect, useState } from "react";
-import styles from "../styles/KanbanBoard.module.css";
+import styles from "../styles/ProjectDetailPage.module.css";
 
-// ---- API 함수들 (아래 모두 KanbanBoard 바깥에 선언) ----
+const COLUMNS = [
+  { key: "TODO", label: "할 일" },
+  { key: "IN_PROGRESS", label: "진행 중" },
+  { key: "DONE", label: "완료" }
+];
+
 const getToken = () => localStorage.getItem("token");
 
-async function fetchColumns(projectId) {
-  const res = await fetch(`/api/task-columns/${projectId}`, {
-    headers: { Authorization: `Bearer ${getToken()}` },
-  });
-  if (!res.ok) throw new Error("컬럼 불러오기 실패");
-  return await res.json();
-}
-async function createColumn(projectId, name, position) {
-  const res = await fetch("/api/task-columns", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
-    },
-    body: JSON.stringify({ projectId, name, position }),
-  });
-  if (!res.ok) throw new Error("컬럼 생성 실패");
-  return await res.json();
-}
-async function updateColumn(columnId, name, position) {
-  const res = await fetch(`/api/task-columns/${columnId}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
-    },
-    body: JSON.stringify({ name, position }),
-  });
-  if (!res.ok) throw new Error("컬럼 수정 실패");
-}
-async function deleteColumn(columnId) {
-  const res = await fetch(`/api/task-columns/${columnId}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${getToken()}` },
-  });
-  if (!res.ok) throw new Error("컬럼 삭제 실패");
-}
-async function fetchTasks(columnId) {
-  const res = await fetch(`/api/tasks/column/${columnId}`, {
-    headers: { Authorization: `Bearer ${getToken()}` },
+async function fetchTasks(projectId) {
+  const res = await fetch(`/api/tasks/project/${projectId}`, {
+    headers: { Authorization: `Bearer ${getToken()}` }
   });
   if (!res.ok) throw new Error("작업 불러오기 실패");
   const data = await res.json();
   return data.tasks || [];
 }
-async function createTask(columnId, title, description, position) {
+
+async function createTask(projectId, title, description, status) {
   const res = await fetch("/api/tasks", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
+      Authorization: `Bearer ${getToken()}`
     },
-    body: JSON.stringify({ columnId, title, description, position }),
+    body: JSON.stringify({ projectId, title, description, status })
   });
   if (!res.ok) throw new Error("작업 생성 실패");
   return await res.json();
 }
-async function deleteTask(taskId) {
+
+async function updateTask(taskId, fields) {
   const res = await fetch(`/api/tasks/${taskId}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${getToken()}` },
-  });
-  if (!res.ok) throw new Error("작업 삭제 실패");
-}
-async function moveTask(taskId, newColumnId, newPosition) {
-  const res = await fetch(`/api/tasks/move/${taskId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
+      Authorization: `Bearer ${getToken()}`
     },
-    body: JSON.stringify({ newColumnId, newPosition }),
+    body: JSON.stringify(fields)
   });
-  if (!res.ok) throw new Error("작업 이동 실패");
+  if (!res.ok) throw new Error("작업 수정 실패");
+  return await res.json();
 }
 
-// ---- 컴포넌트 함수 내부 ----
+async function deleteTask(taskId) {
+  const res = await fetch(`/api/tasks/${taskId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${getToken()}` }
+  });
+  if (!res.ok) throw new Error("작업 삭제 실패");
+}
+
 export default function KanbanBoard({ projectId }) {
-  // 모든 state 선언
-  const [columns, setColumns] = useState([]);
-  const [tasksByColumn, setTasksByColumn] = useState({});
+  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newTask, setNewTask] = useState({});
   const [dragged, setDragged] = useState(null);
-  const [showAddTask, setShowAddTask] = useState({});
-  const [showColumnMenu, setShowColumnMenu] = useState({});
-  const [editingColumn, setEditingColumn] = useState(null);
-  const [columnEditName, setColumnEditName] = useState("");
-  const [showAddColumnInput, setShowAddColumnInput] = useState(false);
-  const [newColumnName, setNewColumnName] = useState("");
+  const [editModal, setEditModal] = useState({ open: false, task: null });
+  const [editFields, setEditFields] = useState({ title: "", description: "" });
 
-  // 초기 데이터 불러오기
   useEffect(() => {
     async function load() {
       setLoading(true);
       try {
-        const cols = await fetchColumns(projectId);
-        setColumns(cols);
-        const tasksObj = {};
-        for (const col of cols) {
-          tasksObj[col.id] = await fetchTasks(col.id);
-        }
-        setTasksByColumn(tasksObj);
+        const taskList = await fetchTasks(projectId);
+        setTasks(taskList);
       } catch (e) {
         alert(e.message);
       } finally {
@@ -114,52 +73,61 @@ export default function KanbanBoard({ projectId }) {
       }
     }
     load();
-    // eslint-disable-next-line
   }, [projectId]);
 
-  // 작업 추가
-  const handleAddTask = async (col) => {
-    const title = newTask[col.id];
+  const handleAddTask = async (status) => {
+    const title = (newTask[status] || "").trim();
     if (!title) return;
-    const position = (tasksByColumn[col.id]?.length || 0) + 1;
     try {
-      await createTask(col.id, title, "", position);
-      const updated = await fetchTasks(col.id);
-      setTasksByColumn((prev) => ({ ...prev, [col.id]: updated }));
-      setNewTask((t) => ({ ...t, [col.id]: "" }));
-      setShowAddTask((prev) => ({ ...prev, [col.id]: false }));
+      await createTask(projectId, title, "", status);
+      const updated = await fetchTasks(projectId);
+      setTasks(updated);
+      setNewTask((t) => ({ ...t, [status]: "" }));
     } catch (e) {
       alert(e.message);
     }
   };
 
-  // 작업 삭제
-  const handleDeleteTask = async (colId, taskId) => {
+  // 수정 모달 열기
+  const handleTaskClick = (task) => {
+    setEditModal({ open: true, task });
+    setEditFields({ title: task.title, description: task.description || "" });
+  };
+
+  // 수정 반영
+  const handleEditSave = async () => {
     try {
-      await deleteTask(taskId);
-      const updated = await fetchTasks(colId);
-      setTasksByColumn((prev) => ({ ...prev, [colId]: updated }));
+      await updateTask(editModal.task.id, {
+        title: editFields.title,
+        description: editFields.description
+      });
+      setTasks(await fetchTasks(projectId));
+      setEditModal({ open: false, task: null });
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
+  // 삭제
+  const handleEditDelete = async () => {
+    if (!window.confirm("정말 삭제할까요?")) return;
+    try {
+      await deleteTask(editModal.task.id);
+      setTasks(await fetchTasks(projectId));
+      setEditModal({ open: false, task: null });
     } catch (e) {
       alert(e.message);
     }
   };
 
   // Drag & Drop
-  const handleDragStart = (colId, taskId) => setDragged({ colId, taskId });
-  const handleDrop = async (targetColId, idx) => {
+  const handleDragStart = (task) => setDragged(task);
+  const handleDrop = async (status) => {
     if (!dragged) return;
-    const { colId, taskId } = dragged;
-    if (colId === targetColId && tasksByColumn[targetColId][idx]?.id === taskId) return setDragged(null);
-
+    if (dragged.status === status) return setDragged(null);
     try {
-      await moveTask(taskId, targetColId, idx + 1);
-      const updatedTarget = await fetchTasks(targetColId);
-      const updatedOrigin = await fetchTasks(colId);
-      setTasksByColumn((prev) => ({
-        ...prev,
-        [targetColId]: updatedTarget,
-        [colId]: updatedOrigin,
-      }));
+      await updateTask(dragged.id, { status });
+      setTasks(await fetchTasks(projectId));
     } catch (e) {
       alert(e.message);
     } finally {
@@ -167,252 +135,91 @@ export default function KanbanBoard({ projectId }) {
     }
   };
 
-  // 컬럼 추가
-  const handleAddColumn = async () => {
-    if (!newColumnName.trim()) return;
-    try {
-      await createColumn(
-        projectId,
-        newColumnName.trim(),
-        columns.length + 1
-      );
-      setNewColumnName("");
-      setShowAddColumnInput(false);
-      // reload
-      const cols = await fetchColumns(projectId);
-      setColumns(cols);
-      const tasksObj = {};
-      for (const col of cols) {
-        tasksObj[col.id] = await fetchTasks(col.id);
-      }
-      setTasksByColumn(tasksObj);
-    } catch (e) {
-      alert(e.message);
-    }
-  };
-
-  // 컬럼 메뉴
-  const handleColumnClick = (col) => {
-    setShowColumnMenu((prev) => ({
-      ...Object.fromEntries(Object.keys(prev).map((k) => [k, false])),
-      [col.id]: !prev[col.id],
-    }));
-    setEditingColumn(null);
-  };
-
-  // 컬럼 수정 시작
-  const handleEditColumn = (col) => {
-    setEditingColumn(col.id);
-    setColumnEditName(col.name);
-    setShowColumnMenu({});
-  };
-
-  // 컬럼 수정 완료
-  const handleSaveEditColumn = async (col) => {
-    if (!columnEditName.trim()) return;
-    try {
-      await updateColumn(col.id, columnEditName.trim(), col.position);
-      setEditingColumn(null);
-      const cols = await fetchColumns(projectId);
-      setColumns(cols);
-    } catch (e) {
-      alert(e.message);
-    }
-  };
-
-  // 컬럼 삭제
-  const handleDeleteColumn = async (col) => {
-    if (!window.confirm("정말 컬럼을 삭제하시겠습니까? (작업도 모두 삭제됩니다)")) return;
-    try {
-      await deleteColumn(col.id);
-      const cols = await fetchColumns(projectId);
-      setColumns(cols);
-      const tasksObj = {};
-      for (const c of cols) {
-        tasksObj[c.id] = await fetchTasks(c.id);
-      }
-      setTasksByColumn(tasksObj);
-    } catch (e) {
-      alert(e.message);
-    }
-  };
-
-  // ---- JSX ----
   if (loading) return <div>로딩 중...</div>;
-  if (columns.length === 0)
-    return (
-      <div>
-        <button
-          onClick={() => setShowAddColumnInput(true)}
-          className={styles.addColMainBtn}
-        >
-          + 새 컬럼 추가
-        </button>
-        {showAddColumnInput && (
-          <div className={styles.addColInputGroup}>
-            <input
-              value={newColumnName}
-              onChange={(e) => setNewColumnName(e.target.value)}
-              placeholder="컬럼명 입력"
-              className={styles.input}
-            />
-            <button onClick={handleAddColumn} className={styles.addColBtn}>
-              추가
-            </button>
-            <button
-              onClick={() => setShowAddColumnInput(false)}
-              className={styles.cancelBtn}
-            >
-              취소
-            </button>
-          </div>
-        )}
-      </div>
-    );
 
   return (
-    <div>
-      <div className={styles.kanbanBoard}>
-        {columns.map((col) => (
-          <div className={styles.kanbanColumn} key={col.id}>
-            <div
-              className={styles.kanbanColumnTitle}
-              onClick={() => handleColumnClick(col)}
-            >
-              {editingColumn === col.id ? (
-                <>
-                  <input
-                    value={columnEditName}
-                    onChange={(e) => setColumnEditName(e.target.value)}
-                    className={styles.input}
-                  />
-                  <button
-                    onClick={() => handleSaveEditColumn(col)}
-                    className={styles.saveBtn}
-                  >
-                    저장
-                  </button>
-                  <button
-                    onClick={() => setEditingColumn(null)}
-                    className={styles.cancelBtn}
-                  >
-                    취소
-                  </button>
-                </>
-              ) : (
-                <>
-                  {col.name}
-                  <span className={styles.dropdownArrow}>▼</span>
-                  {showColumnMenu[col.id] && (
-                    <div className={styles.columnMenu}>
-                      <button
-                        onClick={() => handleEditColumn(col)}
-                        className={styles.menuBtn}
-                      >
-                        이름 수정
-                      </button>
-                      <button
-                        onClick={() => handleDeleteColumn(col)}
-                        className={styles.menuBtnDanger}
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-            {tasksByColumn[col.id]?.map((task, idx) => (
-              <div
-                key={task.id}
-                className={styles.kanbanTask}
-                draggable
-                onDragStart={() => handleDragStart(col.id, task.id)}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={() => handleDrop(col.id, idx)}
-              >
-                {task.title}
-                <button
-                  className={styles.taskDelBtn}
-                  title="삭제"
-                  onClick={() => handleDeleteTask(col.id, task.id)}
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-            {showAddTask[col.id] ? (
-              <div className={styles.addTaskForm}>
-                <input
-                  className={styles.input}
-                  type="text"
-                  placeholder="새 작업 제목..."
-                  value={newTask[col.id] || ""}
-                  onChange={(e) =>
-                    setNewTask({ ...newTask, [col.id]: e.target.value })
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleAddTask(col);
-                  }}
-                  autoFocus
-                />
-                <button
-                  className={styles.addTaskBtn}
-                  onClick={() => handleAddTask(col)}
-                >
-                  추가
-                </button>
-                <button
-                  className={styles.cancelBtn}
-                  onClick={() =>
-                    setShowAddTask((prev) => ({ ...prev, [col.id]: false }))
-                  }
-                >
-                  취소
-                </button>
-              </div>
-            ) : (
-              <button
-                className={styles.addTaskShowBtn}
-                onClick={() =>
-                  setShowAddTask((prev) => ({ ...prev, [col.id]: true }))
-                }
-              >
-                + 작업 추가
-              </button>
-            )}
+    <div className={styles.kanbanBoard}>
+      {COLUMNS.map((col) => (
+        <div
+          key={col.key}
+          className={styles.kanbanColumn}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={() => handleDrop(col.key)}
+        >
+          <div className={`${styles.kanbanColumnTitle} ${col.key.toLowerCase()}`}>
+            {col.label}
           </div>
-        ))}
-        {/* 새 컬럼 추가 버튼 */}
-        <div className={styles.kanbanColumn}>
-          {showAddColumnInput ? (
-            <div className={styles.addColInputGroup}>
-              <input
-                value={newColumnName}
-                onChange={(e) => setNewColumnName(e.target.value)}
-                placeholder="컬럼명 입력"
-                className={styles.input}
-              />
-              <button onClick={handleAddColumn} className={styles.addColBtn}>
-                추가
+          {/* 작업 리스트 */}
+          {tasks.filter((task) => task.status === col.key).map((task) => (
+            <div
+              className={styles.kanbanTask}
+              key={task.id}
+              draggable
+              onDragStart={() => handleDragStart(task)}
+              onClick={() => handleTaskClick(task)}
+              style={{ cursor: "pointer" }}
+            >
+              <div>{task.title}</div>
+              <div style={{ fontSize: 13, color: "#888" }}>{task.description}</div>
+            </div>
+          ))}
+          {/* 작업 추가 입력 */}
+          <div className={styles.addTaskForm}>
+            <input
+              className={styles.input}
+              type="text"
+              placeholder="새 작업 제목..."
+              value={newTask[col.key] || ""}
+              onChange={(e) =>
+                setNewTask((prev) => ({ ...prev, [col.key]: e.target.value }))
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleAddTask(col.key);
+              }}
+            />
+            <button
+              className={styles.addTaskBtn}
+              onClick={() => handleAddTask(col.key)}
+            >
+              추가
+            </button>
+          </div>
+        </div>
+      ))}
+
+      {/* 수정/삭제 모달 */}
+      {editModal.open && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>작업 수정</h3>
+            <input
+              className={styles.input}
+              value={editFields.title}
+              onChange={e => setEditFields(f => ({ ...f, title: e.target.value }))}
+              placeholder="제목 입력"
+              autoFocus
+            />
+            <textarea
+              className={styles.input}
+              value={editFields.description}
+              onChange={e => setEditFields(f => ({ ...f, description: e.target.value }))}
+              placeholder="설명 입력"
+              rows={3}
+            />
+            <div style={{ marginTop: 12, display: "flex", gap: 10 }}>
+              <button className={styles.saveBtn} onClick={handleEditSave}>
+                저장
               </button>
-              <button
-                onClick={() => setShowAddColumnInput(false)}
-                className={styles.cancelBtn}
-              >
-                취소
+              <button className={styles.deleteBtn} onClick={handleEditDelete}>
+                삭제
+              </button>
+              <button className={styles.cancelBtn} onClick={() => setEditModal({ open: false, task: null })}>
+                닫기
               </button>
             </div>
-          ) : (
-            <button
-              className={styles.addColMainBtn}
-              onClick={() => setShowAddColumnInput(true)}
-            >
-              + 새 컬럼 추가
-            </button>
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

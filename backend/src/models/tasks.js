@@ -1,24 +1,25 @@
-// src/models/tasks.js
 const db = require('../config/db');
 
 // Task 생성
-const createTask = async (columnId, title, description, position) => {
-  const query = 'INSERT INTO tasks (column_id, title, description, position) VALUES (?, ?, ?, ?)';
-  const [result] = await db.query(query, [columnId, title, description, position]);
+const createTask = async (projectId, title, description, status) => {
+  const query = 'INSERT INTO tasks (project_id, title, description, status) VALUES (?, ?, ?, ?)';
+  const [result] = await db.query(query, [projectId, title, description, status]);
   return result;
 };
 
-// 특정 컬럼의 Task 조회
-const getTasksByColumnId = async (columnId) => {
-  const query = 'SELECT * FROM tasks WHERE column_id = ? ORDER BY position ASC';
-  const [tasks] = await db.query(query, [columnId]);
+// 프로젝트의 모든 Task 조회
+const getTasksByProject = async (projectId) => {
+  const query = 'SELECT * FROM tasks WHERE project_id = ?';
+  const [tasks] = await db.query(query, [projectId]);
   return tasks;
 };
 
-// Task 수정
-const updateTask = async (taskId, title, description, position) => {
-  const query = 'UPDATE tasks SET title = ?, description = ?, position = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?';
-  const [result] = await db.query(query, [title, description, position, taskId]);
+// Task 수정 (status, title, description 등)
+const updateTask = async (taskId, fields) => {
+  const setClause = Object.keys(fields).map(key => `${key} = ?`).join(', ');
+  const values = [...Object.values(fields), taskId];
+  const query = `UPDATE tasks SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
+  const [result] = await db.query(query, values);
   return result;
 };
 
@@ -29,17 +30,9 @@ const deleteTask = async (taskId) => {
   return result;
 };
 
-// Task 위치/컬럼 이동
-const moveTask = async (taskId, newColumnId, newPosition) => {
-  const query = 'UPDATE tasks SET column_id = ?, position = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?';
-  const [result] = await db.query(query, [newColumnId, newPosition, taskId]);
-  return result;
-};
-
 module.exports = {
   createTask,
-  getTasksByColumnId,
+  getTasksByProject,
   updateTask,
   deleteTask,
-  moveTask,
 };

@@ -9,7 +9,12 @@ const removeMemberFromProject = async (projectId, userId) => {
   return await projectMemberModel.removeMember(projectId, userId);
 };
 
+const getProjectMembers = async (projectId) => {
+  return await projectMemberModel.getMembersByProject(projectId);
+};
+
 module.exports = {
   addMemberToProject,
   removeMemberFromProject,
+  getProjectMembers,
 };

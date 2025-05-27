@@ -25,25 +25,31 @@ const Dashboard = () => {
   }, []);
 
   // 프로젝트 생성 핸들러
-  const handleCreateProject = async (e) => {
-    e.preventDefault();
-    setCreating(true);
-    try {
-      await createProject(newProjectName, newProjectDesc);
-      // 프로젝트 생성 후 목록 갱신
-      const projectList = await getProjects();
-      setProjects(projectList);
-      setNewProjectName("");
-      setNewProjectDesc("");
-    } finally {
-      setCreating(false);
-    }
-  };
+const handleCreateProject = async (e) => {
+  e.preventDefault();
+  setCreating(true);
+  try {
+    // createProject가 새로 만든 프로젝트 객체를 반환해야 함!
+    const newProj = await createProject(newProjectName, newProjectDesc);
+    setNewProjectName("");
+    setNewProjectDesc("");
+    // 바로 상세페이지로 이동
+    navigate(`/project/${newProj.id}`);
+  } finally {
+    setCreating(false);
+  }
+};
 
   // 프로젝트 클릭 시 상세페이지로 이동
   const handleProjectClick = (proj) => {
     // 상세페이지 경로는 /project/:id로 이동
-    navigate(`/project/${proj.id}`);
+    navigate(`/project/${proj.project_id}`);
+  };
+
+  // 로그 아웃 핸들러
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   return (
@@ -52,8 +58,18 @@ const Dashboard = () => {
       <div className={styles.sidebar}>
         {/* 1. 프로필 창 */}
         {user && (
-          <div className={styles.profileBox}>
-            <h3>프로필</h3>
+          <div className={styles.profileBox} style={{ position: "relative" }}>
+            <h3 style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span>프로필</span>
+              <button
+                className={styles.logoutBtn}
+                onClick={handleLogout}
+                title="로그아웃"
+                style={{ marginLeft: 8 }}
+              >
+                로그아웃
+              </button>
+            </h3>
             <p><b>이름:</b> {user.username}</p>
             <p><b>이메일:</b> {user.email}</p>
           </div>

@@ -1,22 +1,21 @@
-// src/controllers/taskController.js
 const taskService = require('../services/taskService');
 
 // Task 생성
 const createTask = async (req, res) => {
-  const { columnId, title, description, position } = req.body;
+  const { projectId, title, description, status } = req.body;
   try {
-    const result = await taskService.createTask(columnId, title, description, position);
+    const result = await taskService.createTask(projectId, title, description, status || 'TODO');
     res.status(201).json({ message: 'Task created successfully', result });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// 특정 컬럼의 Task 조회
-const getTasksByColumnId = async (req, res) => {
-  const { columnId } = req.params;
+// 프로젝트의 모든 Task 조회
+const getTasksByProject = async (req, res) => {
+  const { projectId } = req.params;
   try {
-    const tasks = await taskService.getTasksByColumnId(columnId);
+    const tasks = await taskService.getTasksByProject(projectId);
     res.status(200).json({ tasks });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -26,9 +25,8 @@ const getTasksByColumnId = async (req, res) => {
 // Task 수정
 const updateTask = async (req, res) => {
   const { taskId } = req.params;
-  const { title, description, position } = req.body;
   try {
-    const result = await taskService.updateTask(taskId, title, description, position);
+    const result = await taskService.updateTask(taskId, req.body);
     res.status(200).json({ message: 'Task updated successfully', result });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -46,22 +44,9 @@ const deleteTask = async (req, res) => {
   }
 };
 
-// Task 위치/컬럼 이동
-const moveTask = async (req, res) => {
-  const { taskId } = req.params;
-  const { newColumnId, newPosition } = req.body;
-  try {
-    const result = await taskService.moveTask(taskId, newColumnId, newPosition);
-    res.status(200).json({ message: 'Task moved successfully', result });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 module.exports = {
   createTask,
-  getTasksByColumnId,
+  getTasksByProject,
   updateTask,
   deleteTask,
-  moveTask,
 };

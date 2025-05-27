@@ -6,7 +6,6 @@ const socketIo = require('socket.io');
 const authRoutes = require('./routes/authRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const projectMemberRoutes = require('./routes/projectMemberRoutes');
-const taskColumnRoutes = require('./routes/taskColumnRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const calendarEventRoutes = require('./routes/calendarEventRoutes');
 const messageRoutes = require('./routes/messageRoutes');
@@ -25,7 +24,6 @@ app.use(cors()); // CORS 설정
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/project-members', projectMemberRoutes);
-app.use('/api/task-columns', taskColumnRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/events', calendarEventRoutes);
 app.use('/api/messages', messageRoutes);
