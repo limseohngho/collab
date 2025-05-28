@@ -12,9 +12,7 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // login 함수가 토큰 저장 및 인증 상태 업데이트가 확실히 끝난 뒤에만 navigate 실행
       await login(email, password);
-      // 토큰이 헤더에 반영되었을 때만 이동!
       navigate('/dashboard');
     } catch (error) {
       alert('로그인에 실패했습니다. 이메일 및 비밀번호를 확인해주세요.');

@@ -1,4 +1,3 @@
-// controllers/messageController.js
 const messageService = require('../services/messageService');
 
 exports.sendMessage = async (req, res) => {

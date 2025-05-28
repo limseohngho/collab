@@ -1,4 +1,3 @@
-// models/messages.js
 const db = require('../config/db');
 
 exports.sendMessage = async (projectId, senderId, message) => {

@@ -5,7 +5,6 @@
   overflow: hidden;
 }
 
-/* ====== 왼쪽 사이드바(프로필+내 프로젝트) ====== */
 .sidebar {
   width: 300px;
   background: #f0f8ff;
@@ -96,7 +95,6 @@
   font-weight: bold;
 }
 
-/* ===== 중앙(2/3) + 오른쪽(1/3) flex 구조 ===== */
 .mainContent {
   flex: 2;
   display: flex;
@@ -125,8 +123,8 @@
   gap: 24px;
   margin-top: 16px;
   margin-bottom: 16px;
-  width: 100%;        /* 💡 부모 영역 안에서만! */
-  max-width: 100%;    /* 💡 flex 영역 절대 넘지 않게 */
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
   height: auto;
   align-self: stretch;
@@ -346,7 +344,6 @@
   box-sizing: border-box;
 }
 
-/* ===== 우측 탭 ===== */
 .tabBar {
   display: flex;
   margin-bottom: 20px;

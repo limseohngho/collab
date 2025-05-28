@@ -1,4 +1,3 @@
-// services/messageService.js
 const messageModel = require('../models/messages');
 
 exports.sendMessage = (projectId, senderId, message) => {

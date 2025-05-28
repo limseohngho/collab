@@ -1,4 +1,3 @@
-// controllers/calendarEventController.js
 const calendarEventService = require('../services/calendarEventService');
 
 exports.createEvent = async (req, res) => {

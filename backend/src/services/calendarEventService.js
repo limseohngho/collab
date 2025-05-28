@@ -1,4 +1,3 @@
-// services/calendarEventService.js
 const calendarEventModel = require('../models/calendarEvents');
 
 module.exports = {

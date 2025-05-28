@@ -26,7 +26,6 @@
   overflow-x: auto;
 }
 
-/* 모바일/좁은 화면 대응 */
 @media (max-width: 1100px) {
   .calendarWrapper {
     max-width: 98vw;
@@ -39,12 +38,10 @@
   }
 }
 
-/* ===== react-big-calendar 상단 조작 버튼, 뷰 전환 탭, 라벨 모두 숨김 ===== */
 .rbc-toolbar {
   display: none !important;
 }
 
-/* react-big-calendar 커스텀 */
 .rbc-today {
   background: #eaf6ff !important;
 }
@@ -59,7 +56,6 @@
   background: #f0f8ff;
 }
 
-/* ====== 모달 ====== */
 .modalOverlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;

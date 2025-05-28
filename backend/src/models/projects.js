@@ -1,4 +1,3 @@
-// models/projects.js
 const db = require('../config/db');
 
 exports.createProject = async (name, description, createdBy) => {

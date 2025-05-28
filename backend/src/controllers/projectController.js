@@ -1,4 +1,3 @@
-// controllers/projectController.js
 const projectService = require('../services/projectService');
 
 exports.createProject = async (req, res) => {

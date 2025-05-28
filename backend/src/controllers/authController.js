@@ -1,21 +1,13 @@
-// controllers/authController.js
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { createUser, findUserByEmail } = require('../models/users');
-
-const JWT_SECRET = process.env.JWT_SECRET || 'secretkey';
+const authService = require('../services/authService');
 
 exports.registerUser = async (req, res) => {
   const { username, email, password } = req.body;
   try {
-    if (await findUserByEmail(email)) {
-      return res.status(400).json({ msg: 'User already exists' });
+    const result = await authService.registerUser(username, email, password);
+    if (!result.success) {
+      return res.status(result.status).json({ msg: result.msg });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await createUser(username, email, hashedPassword);
-    const newUser = await findUserByEmail(email);
-    const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, { expiresIn: '1h' });
-    res.status(201).json({ token });
+    res.status(201).json(result.data);
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Server error' });
@@ -25,14 +17,38 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await findUserByEmail(email);
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
+    const result = await authService.loginUser(email, password);
+    if (!result.success) {
+      return res.status(result.status).json({ msg: result.msg });
     }
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+    res.status(200).json(result.data);
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+exports.getMe = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const user = await authService.getMe(userId);
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+exports.getUserByEmail = async (req, res) => {
+  const { email } = req.query;
+  if (!email) return res.status(400).json({ msg: "email is required" });
+  try {
+    const user = await authService.getUserByEmail(email);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+    res.json(user);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ msg: "Server error" });
   }
 };

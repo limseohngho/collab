@@ -1,4 +1,3 @@
-// api/index.js
 export async function getUserInfo() {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("로그인 토큰이 없습니다. 다시 로그인해 주세요.");

@@ -1,4 +1,3 @@
-// services/projectService.js
 const projectModel = require('../models/projects');
 
 exports.createProject = async (name, description, userId) => {

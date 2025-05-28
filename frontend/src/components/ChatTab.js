@@ -14,7 +14,6 @@ const ChatTab = ({ projectId }) => {
   const socketRef = useRef();
   const userInfo = getUser();
 
-  // 스크롤 아래로
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -23,7 +22,6 @@ const ChatTab = ({ projectId }) => {
 
   useEffect(scrollToBottom, [messages]);
 
-  // 메시지 불러오기 (DB에서)
   useEffect(() => {
     if (!projectId) return;
     setLoading(true);
@@ -38,7 +36,6 @@ const ChatTab = ({ projectId }) => {
       .catch(() => setLoading(false));
   }, [projectId]);
 
-  // 소켓 연결 및 메시지 수신
   useEffect(() => {
     socketRef.current = io(SOCKET_URL);
 
@@ -48,7 +45,7 @@ const ChatTab = ({ projectId }) => {
           ...prev,
           {
             ...data,
-            username: data.username || userInfo.username, // fallback
+            username: data.username || userInfo.username,
           }
         ]);
       }
@@ -57,16 +54,12 @@ const ChatTab = ({ projectId }) => {
     return () => {
       socketRef.current.disconnect();
     };
-    // userInfo.username이 바뀌면 소켓에서 보낼 때 username도 바뀌어야 함
-    // eslint-disable-next-line
   }, [projectId, userInfo.username]);
 
-  // 메시지 전송 (DB 저장 + 소켓 브로드캐스트)
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
     try {
-      // DB에 저장
       const res = await fetch("/api/messages", {
         method: "POST",
         headers: {
@@ -80,7 +73,6 @@ const ChatTab = ({ projectId }) => {
       });
       if (!res.ok) throw new Error("메시지 전송 실패");
 
-      // 소켓으로 실시간 전송 (username 반드시 포함)
       socketRef.current.emit("send_message", {
         projectId,
         username: userInfo.username,
@@ -110,7 +102,6 @@ const ChatTab = ({ projectId }) => {
           messages.map((msg, idx) => {
             const sender = msg.username || "알 수 없음";
             const isMine = sender === userInfo.username;
-            // key는 id + sent_at + username + idx 조합 (중복 방지)
             const key = `${msg.id ?? ""}-${msg.sent_at ?? idx}-${sender}-${idx}`;
             return (
               <div

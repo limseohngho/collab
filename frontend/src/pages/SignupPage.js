@@ -68,7 +68,7 @@ const SignupPage = () => {
           type="button"
           className={styles.button}
           onClick={() => navigate('/')}
-          style={{ marginTop: 10 }} // 버튼 사이 간격
+          style={{ marginTop: 10 }}
         >
           로그인으로 돌아가기
         </button>

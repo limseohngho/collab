@@ -1,4 +1,3 @@
-// models/users.js
 const db = require('../config/db');
 
 exports.createUser = async (username, email, hashedPassword) => {

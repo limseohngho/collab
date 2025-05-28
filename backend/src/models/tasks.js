@@ -1,4 +1,3 @@
-// models/tasks.js
 const db = require('../config/db');
 
 exports.createTask = async (projectId, title, description, status) => {

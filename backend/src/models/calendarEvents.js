@@ -1,4 +1,3 @@
-// models/calendarEvents.js
 const db = require('../config/db');
 
 exports.createEvent = async (projectId, title, startTime, endTime, description, createdBy) => {

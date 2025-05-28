@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// 예시로 API 함수들 import (실제 파일 경로와 함수명은 프로젝트에 맞게 수정)
 import { getUserInfo, getProjects, createProject } from "../api"; 
 import styles from "../styles/Dashboard.module.css";
 
@@ -12,10 +11,9 @@ const Dashboard = () => {
   const [creating, setCreating] = useState(false);
   const navigate = useNavigate();
 
-  // 유저 정보 및 프로젝트 목록 불러오기
   useEffect(() => {
     async function fetchData() {
-      const userInfo = await getUserInfo(); // JWT 토큰 기반 API 호출
+      const userInfo = await getUserInfo();
       setUser(userInfo);
 
       const projectList = await getProjects();
@@ -24,29 +22,23 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  // 프로젝트 생성 핸들러
 const handleCreateProject = async (e) => {
   e.preventDefault();
   setCreating(true);
   try {
-    // createProject가 새로 만든 프로젝트 객체를 반환해야 함!
     const newProj = await createProject(newProjectName, newProjectDesc);
     setNewProjectName("");
     setNewProjectDesc("");
-    // 바로 상세페이지로 이동
     navigate(`/project/${newProj.id}`);
   } finally {
     setCreating(false);
   }
 };
 
-  // 프로젝트 클릭 시 상세페이지로 이동
   const handleProjectClick = (proj) => {
-    // 상세페이지 경로는 /project/:id로 이동
     navigate(`/project/${proj.project_id}`);
   };
 
-  // 로그 아웃 핸들러
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
@@ -54,9 +46,7 @@ const handleCreateProject = async (e) => {
 
   return (
     <div className={styles.dashboardContainer}>
-      {/* 사이드바: 프로필 + 내 프로젝트 */}
       <div className={styles.sidebar}>
-        {/* 1. 프로필 창 */}
         {user && (
           <div className={styles.profileBox} style={{ position: "relative" }}>
             <h3 style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -75,7 +65,6 @@ const handleCreateProject = async (e) => {
           </div>
         )}
 
-        {/* 2. 프로젝트 목록 */}
         <div className={styles.projectsSection}>
           <div className={styles.projectsTitle}>내 프로젝트</div>
           <ul className={styles.projectsList}>
@@ -93,7 +82,6 @@ const handleCreateProject = async (e) => {
         </div>
       </div>
 
-      {/* 메인: 새 프로젝트 생성 */}
       <main className={styles.mainContent}>
         <div className={styles.createProjectBox}>
           <h3>새 프로젝트 생성</h3>

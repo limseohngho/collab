@@ -1,22 +1,22 @@
 .kanbanBoard {
   display: flex;
-  gap: 18px;                     /* 24px → 18px로 줄임 */
+  gap: 18px;
   align-items: flex-start;
   padding: 12px 0;
   overflow-x: auto;
-  max-width: 650px;              /* 추가: 최대폭 제한 (ProjectDetailPage.module.css와 맞춤) */
+  max-width: 650px; 
   width: 100%;
 }
 .kanbanColumn {
   background: #f4f8fa;
   border-radius: 12px;
-  min-width: 180px;              /* 220px → 180px로 줄임 */
-  max-width: 210px;              /* 260px → 210px로 줄임 */
-  padding: 15px 8px 20px 8px;    /* padding을 살짝 줄임 */
+  min-width: 180px;
+  max-width: 210px;
+  padding: 15px 8px 20px 8px;
   box-shadow: 0 2px 8px rgba(34,116,165,0.05);
   position: relative;
   margin-bottom: 12px;
-  flex: 1 0 180px;               /* 220px → 180px */
+  flex: 1 0 180px;
 }
 .kanbanColumnTitle {
   font-size: 18px;

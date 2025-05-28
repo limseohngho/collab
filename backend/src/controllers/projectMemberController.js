@@ -1,6 +1,5 @@
 const projectMemberService = require('../services/projectMemberService');
 
-// 덮어쓰기 추가/수정
 exports.addOrUpdateMember = async (req, res) => {
   const { projectId, userId, role } = req.body;
   if (!projectId || !userId) {

@@ -8,7 +8,6 @@ import ChatTab from "../components/ChatTab";
 
 const getToken = () => localStorage.getItem("token");
 
-// 이메일로 userId 조회 API
 async function fetchUserIdByEmail(email) {
   const res = await fetch(`/api/auth/by-email?email=${encodeURIComponent(email)}`, {
     headers: { Authorization: `Bearer ${getToken()}` }
@@ -18,7 +17,6 @@ async function fetchUserIdByEmail(email) {
   return user.id;
 }
 
-// 멤버 덮어쓰기 추가 API
 async function addOrUpdateProjectMember(projectId, userId, role = "member") {
   const res = await fetch(`/api/project-members/add`, {
     method: "POST",
@@ -35,7 +33,6 @@ async function addOrUpdateProjectMember(projectId, userId, role = "member") {
   return await res.json();
 }
 
-// 기존 멤버 목록 불러오기
 async function fetchProjectMembers(projectId) {
   const res = await fetch(`/api/project-members?projectId=${projectId}`, {
     headers: { Authorization: `Bearer ${getToken()}` }
@@ -153,7 +150,6 @@ const ProjectDetailPage = () => {
     }
   };
 
-  // 멤버 추가/덮어쓰기
   const handleAddMember = async () => {
     if (!addEmail.trim()) return;
     setAddLoading(true);
@@ -171,7 +167,6 @@ const ProjectDetailPage = () => {
     }
   };
 
-  // 로그아웃 핸들러
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
@@ -213,7 +208,6 @@ const ProjectDetailPage = () => {
 
   return (
     <div className={styles.container}>
-      {/* 좌측 사이드바 */}
       <div className={styles.sidebar}>
         {user && (
           <div className={styles.profileBox} style={{ position: "relative" }}>
@@ -260,7 +254,6 @@ const ProjectDetailPage = () => {
         </div>
       </div>
 
-      {/* 중앙: 프로젝트 이름 + 칸반 보드 (2/3) + 오른쪽 (1/3) */}
       <main className={styles.mainContent}>
         <div className={styles.kanbanBoardSection}>
           <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
@@ -324,7 +317,6 @@ const ProjectDetailPage = () => {
         </div>
       </main>
 
-      {/* 프로젝트 멤버 모달 */}
       {showMembers && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -344,7 +336,6 @@ const ProjectDetailPage = () => {
                     ))
                   )}
                 </ul>
-                {/* 멤버 추가 버튼/폼 */}
                 {showAddInput ? (
                   <div style={{ marginTop: 15, display: "flex", gap: 6 }}>
                     <input
@@ -390,7 +381,6 @@ const ProjectDetailPage = () => {
         </div>
       )}
 
-      {/* 프로젝트 수정 모달 */}
       {editModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
