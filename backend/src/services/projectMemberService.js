@@ -1,8 +1,7 @@
-// services/projectMemberService.js
 const projectMemberModel = require('../models/projectMembers');
 
 module.exports = {
-  addMemberToProject: (...args) => projectMemberModel.addMember(...args),
+  addOrUpdateMemberToProject: (...args) => projectMemberModel.addOrUpdateMember(...args),
   removeMemberFromProject: (...args) => projectMemberModel.removeMember(...args),
   getProjectMembers: (...args) => projectMemberModel.getMembersByProject(...args),
 };

@@ -4,15 +4,45 @@ import { getUserInfo, getProjects } from "../api";
 import styles from "../styles/ProjectDetailPage.module.css";
 import KanbanBoard from "../components/KanbanBoard";
 import CalendarTab from "../components/CalendarTab";
-
-const ChatTab = () => (
-  <div>
-    <h3 style={{ color: "#2274A5", marginBottom: 12 }}>채팅</h3>
-    <div style={{ color: "#888" }}>채팅 기능 예정</div>
-  </div>
-);
+import ChatTab from "../components/ChatTab";
 
 const getToken = () => localStorage.getItem("token");
+
+// 이메일로 userId 조회 API
+async function fetchUserIdByEmail(email) {
+  const res = await fetch(`/api/auth/by-email?email=${encodeURIComponent(email)}`, {
+    headers: { Authorization: `Bearer ${getToken()}` }
+  });
+  if (!res.ok) throw new Error("해당 이메일의 사용자를 찾을 수 없습니다.");
+  const user = await res.json();
+  return user.id;
+}
+
+// 멤버 덮어쓰기 추가 API
+async function addOrUpdateProjectMember(projectId, userId, role = "member") {
+  const res = await fetch(`/api/project-members/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify({ projectId, userId, role }),
+  });
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(msg || "멤버 추가 실패");
+  }
+  return await res.json();
+}
+
+// 기존 멤버 목록 불러오기
+async function fetchProjectMembers(projectId) {
+  const res = await fetch(`/api/project-members?projectId=${projectId}`, {
+    headers: { Authorization: `Bearer ${getToken()}` }
+  });
+  if (!res.ok) throw new Error("프로젝트 멤버를 불러오지 못했습니다.");
+  return await res.json();
+}
 
 async function updateProject(projectId, fields) {
   const res = await fetch(`/api/projects/${projectId}`, {
@@ -35,15 +65,6 @@ async function deleteProject(projectId) {
   if (!res.ok) throw new Error("프로젝트 삭제 실패");
 }
 
-// 프로젝트 멤버 불러오기 (API 엔드포인트를 실제 서버에 맞게 수정하세요)
-async function fetchProjectMembers(projectId) {
-  const res = await fetch(`/api/project-members?projectId=${projectId}`, {
-    headers: { Authorization: `Bearer ${getToken()}` }
-  });
-  if (!res.ok) throw new Error("프로젝트 멤버를 불러오지 못했습니다.");
-  return await res.json();
-}
-
 const ProjectDetailPage = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
@@ -53,11 +74,12 @@ const ProjectDetailPage = () => {
   const [editModal, setEditModal] = useState(false);
   const [editFields, setEditFields] = useState({ name: "", description: "" });
   const [loading, setLoading] = useState(false);
-
-  // 멤버 관련 state
   const [showMembers, setShowMembers] = useState(false);
   const [members, setMembers] = useState([]);
   const [membersLoading, setMembersLoading] = useState(false);
+  const [showAddInput, setShowAddInput] = useState(false);
+  const [addEmail, setAddEmail] = useState("");
+  const [addLoading, setAddLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -131,12 +153,29 @@ const ProjectDetailPage = () => {
     }
   };
 
+  // 멤버 추가/덮어쓰기
+  const handleAddMember = async () => {
+    if (!addEmail.trim()) return;
+    setAddLoading(true);
+    try {
+      const userId = await fetchUserIdByEmail(addEmail.trim());
+      await addOrUpdateProjectMember(currentProject.project_id, userId, "member");
+      const updated = await fetchProjectMembers(currentProject.project_id);
+      setMembers(updated);
+      setShowAddInput(false);
+      setAddEmail("");
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setAddLoading(false);
+    }
+  };
+
   // 로그아웃 핸들러
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
   };
-
 
   if (projects.length > 0 && !currentProject)
     return (
@@ -279,7 +318,7 @@ const ProjectDetailPage = () => {
             <div className={styles.tabContent}>
               {activeTab === "calendar"
                 ? <CalendarTab projectId={currentProject.project_id} />
-                : <ChatTab />}
+                : <ChatTab projectId={currentProject.project_id} />}
             </div>
           </div>
         </div>
@@ -293,17 +332,54 @@ const ProjectDetailPage = () => {
             {membersLoading ? (
               <div>불러오는 중...</div>
             ) : (
-              <ul style={{ padding: 0, margin: "14px 0 0 0" }}>
-                {members.length === 0 ? (
-                  <li style={{ color: "#888" }}>멤버가 없습니다.</li>
+              <>
+                <ul style={{ padding: 0, margin: "14px 0 0 0" }}>
+                  {members.length === 0 ? (
+                    <li style={{ color: "#888" }}>멤버가 없습니다.</li>
+                  ) : (
+                    members.map((m) => (
+                      <li key={m.id || m.user_id} style={{ marginBottom: 7, listStyle: "none" }}>
+                        <b>{m.username}</b> <span style={{ color: "#666", fontSize: 13 }}>({m.email})</span>
+                      </li>
+                    ))
+                  )}
+                </ul>
+                {/* 멤버 추가 버튼/폼 */}
+                {showAddInput ? (
+                  <div style={{ marginTop: 15, display: "flex", gap: 6 }}>
+                    <input
+                      type="email"
+                      className={styles.input}
+                      placeholder="이메일로 멤버 추가"
+                      value={addEmail}
+                      onChange={e => setAddEmail(e.target.value)}
+                      disabled={addLoading}
+                    />
+                    <button
+                      className={styles.saveBtn}
+                      disabled={addLoading || !addEmail.trim()}
+                      onClick={handleAddMember}
+                    >
+                      추가
+                    </button>
+                    <button
+                      className={styles.cancelBtn}
+                      disabled={addLoading}
+                      onClick={() => { setShowAddInput(false); setAddEmail(""); }}
+                    >
+                      취소
+                    </button>
+                  </div>
                 ) : (
-                  members.map((m) => (
-                    <li key={m.id || m.user_id} style={{ marginBottom: 7, listStyle: "none" }}>
-                      <b>{m.username}</b> <span style={{ color: "#666", fontSize: 13 }}>({m.email})</span>
-                    </li>
-                  ))
+                  <button
+                    className={styles.addEventBtn}
+                    style={{ marginTop: 16, marginLeft: 0 }}
+                    onClick={() => setShowAddInput(true)}
+                  >
+                    + 멤버 추가
+                  </button>
                 )}
-              </ul>
+              </>
             )}
             <div style={{ marginTop: 18 }}>
               <button className={styles.cancelBtn} onClick={() => setShowMembers(false)}>

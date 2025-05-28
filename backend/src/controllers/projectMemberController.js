@@ -1,11 +1,14 @@
-// controllers/projectMemberController.js
 const projectMemberService = require('../services/projectMemberService');
 
-exports.addMember = async (req, res) => {
+// 덮어쓰기 추가/수정
+exports.addOrUpdateMember = async (req, res) => {
   const { projectId, userId, role } = req.body;
+  if (!projectId || !userId) {
+    return res.status(400).json({ msg: 'projectId and userId are required' });
+  }
   try {
-    await projectMemberService.addMemberToProject(projectId, userId, role);
-    res.status(201).json({ msg: 'Member added successfully' });
+    await projectMemberService.addOrUpdateMemberToProject(projectId, userId, role);
+    res.status(201).json({ msg: 'Member added or updated successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Server error' });

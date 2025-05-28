@@ -1,19 +1,26 @@
-// models/projectMembers.js
 const db = require('../config/db');
 
-exports.addMember = async (projectId, userId, role = 'member') => {
+// 덮어쓰기: 이미 있으면 role만 바꿈, 없으면 추가
+exports.addOrUpdateMember = async (projectId, userId, role = 'member') => {
   const [existingMember] = await db.query(
     'SELECT * FROM project_member WHERE project_id = ? AND user_id = ?',
     [projectId, userId]
   );
   if (existingMember.length > 0) {
-    throw new Error(`User with ID ${userId} is already a member of project ${projectId}`);
+    // 이미 있으면 role만 업데이트
+    await db.query(
+      'UPDATE project_member SET role = ? WHERE project_id = ? AND user_id = ?',
+      [role || existingMember[0].role, projectId, userId]
+    );
+    return { updated: true };
+  } else {
+    // 없으면 새로 추가
+    await db.query(
+      'INSERT INTO project_member (project_id, user_id, role) VALUES (?, ?, ?)',
+      [projectId, userId, role]
+    );
+    return { inserted: true };
   }
-  const [result] = await db.query(
-    'INSERT INTO project_member (project_id, user_id, role) VALUES (?, ?, ?)',
-    [projectId, userId, role]
-  );
-  return result;
 };
 
 exports.removeMember = async (projectId, userId) => {

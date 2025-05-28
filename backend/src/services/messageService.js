@@ -1,7 +1,10 @@
 // services/messageService.js
 const messageModel = require('../models/messages');
 
-module.exports = {
-  sendMessage: (...args) => messageModel.sendMessage(...args),
-  getMessagesByProject: (...args) => messageModel.getMessagesByProject(...args),
+exports.sendMessage = (projectId, senderId, message) => {
+  return messageModel.sendMessage(projectId, senderId, message);
+};
+
+exports.getMessagesByProject = (projectId) => {
+  return messageModel.getMessagesByProject(projectId);
 };

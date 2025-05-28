@@ -11,7 +11,11 @@ exports.sendMessage = async (projectId, senderId, message) => {
 
 exports.getMessagesByProject = async (projectId) => {
   const [rows] = await db.query(
-    'SELECT * FROM messages WHERE project_id = ? ORDER BY sent_at ASC',
+    `SELECT m.*, u.username
+     FROM messages m
+     JOIN users u ON m.sender_id = u.id
+     WHERE m.project_id = ?
+     ORDER BY m.sent_at ASC`,
     [projectId]
   );
   return rows;
