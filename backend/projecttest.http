@@ -1,0 +1,28 @@
+###프로젝트 생성
+POST http://localhost:5000/api/projects
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NzEzNzc0MSwiZXhwIjoxNzQ3MTQxMzQxfQ.zuQVL18hlkTN0URJUP9TUCg09QcQ5dgujq5RZWYRALA
+
+{
+  "name": "test",
+  "description": "test"
+}
+
+### 프로젝트 목록 조회
+GET http://localhost:5000/api/projects
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTc0NzEyOTgxNiwiZXhwIjoxNzQ3MTMzNDE2fQ.rfrHWnl53gE_pDRm36HumsrOUS38LQbsf3mCBQEAeLE
+Content-Type: application/json
+
+### 프로젝트 수정
+PUT http://localhost:5000/api/projects/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTc0NzEzNjgwNSwiZXhwIjoxNzQ3MTQwNDA1fQ.EL1LhG51ZTr7rGQHgS7OKlRWL-uhIM6jG-iRYSMlQ1Q
+
+{
+  "name": "수정1",
+  "description": "설명 수정"
+}
+
+### 프로젝트 삭제 요청
+DELETE http://localhost:5000/api/projects/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTc0NzEzNjgwNSwiZXhwIjoxNzQ3MTQwNDA1fQ.EL1LhG51ZTr7rGQHgS7OKlRWL-uhIM6jG-iRYSMlQ1Q
