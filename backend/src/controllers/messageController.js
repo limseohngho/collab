@@ -1,10 +1,9 @@
-// src/controllers/messageController.js
+// controllers/messageController.js
 const messageService = require('../services/messageService');
 
-const sendMessage = async (req, res) => {
+exports.sendMessage = async (req, res) => {
   const { projectId, message } = req.body;
   const senderId = req.user?.userId;
-
   try {
     const result = await messageService.sendMessage(projectId, senderId, message);
     res.status(201).json({ message: 'Message sent', result });
@@ -13,18 +12,11 @@ const sendMessage = async (req, res) => {
   }
 };
 
-const getMessages = async (req, res) => {
-  const projectId = req.params.projectId;
-
+exports.getMessages = async (req, res) => {
   try {
-    const messages = await messageService.getMessagesByProject(projectId);
+    const messages = await messageService.getMessagesByProject(req.params.projectId);
     res.status(200).json(messages);
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch messages', error: err.message });
   }
-};
-
-module.exports = {
-  sendMessage,
-  getMessages,
 };

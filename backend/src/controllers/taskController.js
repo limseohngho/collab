@@ -1,7 +1,7 @@
+// controllers/taskController.js
 const taskService = require('../services/taskService');
 
-// Task 생성
-const createTask = async (req, res) => {
+exports.createTask = async (req, res) => {
   const { projectId, title, description, status } = req.body;
   try {
     const result = await taskService.createTask(projectId, title, description, status || 'TODO');
@@ -11,8 +11,7 @@ const createTask = async (req, res) => {
   }
 };
 
-// 프로젝트의 모든 Task 조회
-const getTasksByProject = async (req, res) => {
+exports.getTasksByProject = async (req, res) => {
   const { projectId } = req.params;
   try {
     const tasks = await taskService.getTasksByProject(projectId);
@@ -22,8 +21,7 @@ const getTasksByProject = async (req, res) => {
   }
 };
 
-// Task 수정
-const updateTask = async (req, res) => {
+exports.updateTask = async (req, res) => {
   const { taskId } = req.params;
   try {
     const result = await taskService.updateTask(taskId, req.body);
@@ -33,8 +31,7 @@ const updateTask = async (req, res) => {
   }
 };
 
-// Task 삭제
-const deleteTask = async (req, res) => {
+exports.deleteTask = async (req, res) => {
   const { taskId } = req.params;
   try {
     const result = await taskService.deleteTask(taskId);
@@ -42,11 +39,4 @@ const deleteTask = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
-
-module.exports = {
-  createTask,
-  getTasksByProject,
-  updateTask,
-  deleteTask,
 };

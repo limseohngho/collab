@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styles from "../styles/ProjectDetailPage.module.css";
 
 const COLUMNS = [
@@ -60,74 +60,67 @@ export default function KanbanBoard({ projectId }) {
   const [editModal, setEditModal] = useState({ open: false, task: null });
   const [editFields, setEditFields] = useState({ title: "", description: "" });
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const taskList = await fetchTasks(projectId);
-        setTasks(taskList);
-      } catch (e) {
-        alert(e.message);
-      } finally {
-        setLoading(false);
-      }
+  const loadTasks = useCallback(async () => {
+    setLoading(true);
+    try {
+      setTasks(await fetchTasks(projectId));
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setLoading(false);
     }
-    load();
   }, [projectId]);
+
+  useEffect(() => { loadTasks(); }, [loadTasks]);
 
   const handleAddTask = async (status) => {
     const title = (newTask[status] || "").trim();
     if (!title) return;
     try {
       await createTask(projectId, title, "", status);
-      const updated = await fetchTasks(projectId);
-      setTasks(updated);
+      await loadTasks();
       setNewTask((t) => ({ ...t, [status]: "" }));
     } catch (e) {
       alert(e.message);
     }
   };
 
-  // 수정 모달 열기
   const handleTaskClick = (task) => {
     setEditModal({ open: true, task });
     setEditFields({ title: task.title, description: task.description || "" });
   };
 
-  // 수정 반영
   const handleEditSave = async () => {
     try {
       await updateTask(editModal.task.id, {
         title: editFields.title,
         description: editFields.description
       });
-      setTasks(await fetchTasks(projectId));
+      await loadTasks();
       setEditModal({ open: false, task: null });
     } catch (e) {
       alert(e.message);
     }
   };
 
-  // 삭제
   const handleEditDelete = async () => {
     if (!window.confirm("정말 삭제할까요?")) return;
     try {
       await deleteTask(editModal.task.id);
-      setTasks(await fetchTasks(projectId));
+      await loadTasks();
       setEditModal({ open: false, task: null });
     } catch (e) {
       alert(e.message);
     }
   };
 
-  // Drag & Drop
   const handleDragStart = (task) => setDragged(task);
   const handleDrop = async (status) => {
     if (!dragged) return;
     if (dragged.status === status) return setDragged(null);
     try {
       await updateTask(dragged.id, { status });
-      setTasks(await fetchTasks(projectId));
+      await loadTasks();
     } catch (e) {
       alert(e.message);
     } finally {
@@ -149,7 +142,6 @@ export default function KanbanBoard({ projectId }) {
           <div className={`${styles.kanbanColumnTitle} ${col.key.toLowerCase()}`}>
             {col.label}
           </div>
-          {/* 작업 리스트 */}
           {tasks.filter((task) => task.status === col.key).map((task) => (
             <div
               className={styles.kanbanTask}
@@ -163,7 +155,6 @@ export default function KanbanBoard({ projectId }) {
               <div style={{ fontSize: 13, color: "#888" }}>{task.description}</div>
             </div>
           ))}
-          {/* 작업 추가 입력 */}
           <div className={styles.addTaskForm}>
             <input
               className={styles.input}
@@ -186,8 +177,6 @@ export default function KanbanBoard({ projectId }) {
           </div>
         </div>
       ))}
-
-      {/* 수정/삭제 모달 */}
       {editModal.open && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -207,15 +196,9 @@ export default function KanbanBoard({ projectId }) {
               rows={3}
             />
             <div style={{ marginTop: 12, display: "flex", gap: 10 }}>
-              <button className={styles.saveBtn} onClick={handleEditSave}>
-                저장
-              </button>
-              <button className={styles.deleteBtn} onClick={handleEditDelete}>
-                삭제
-              </button>
-              <button className={styles.cancelBtn} onClick={() => setEditModal({ open: false, task: null })}>
-                닫기
-              </button>
+              <button className={styles.saveBtn} onClick={handleEditSave}>저장</button>
+              <button className={styles.deleteBtn} onClick={handleEditDelete}>삭제</button>
+              <button className={styles.cancelBtn} onClick={() => setEditModal({ open: false, task: null })}>닫기</button>
             </div>
           </div>
         </div>
