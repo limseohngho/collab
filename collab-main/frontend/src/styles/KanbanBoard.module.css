@@ -1,0 +1,171 @@
+.kanbanBoard {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 12px 0;
+  overflow-x: auto;
+  max-width: 650px; 
+  width: 100%;
+}
+.kanbanColumn {
+  background: #f4f8fa;
+  border-radius: 12px;
+  min-width: 180px;
+  max-width: 210px;
+  padding: 15px 8px 20px 8px;
+  box-shadow: 0 2px 8px rgba(34,116,165,0.05);
+  position: relative;
+  margin-bottom: 12px;
+  flex: 1 0 180px;
+}
+.kanbanColumnTitle {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2274A5;
+  margin-bottom: 13px;
+  padding-bottom: 6px;
+  border-bottom: 1.5px solid #d8e3ed;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dropdownArrow {
+  font-size: 16px;
+  color: #bbb;
+  margin-left: 3px;
+}
+.columnMenu {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 7px;
+  box-shadow: 0 2px 8px rgba(34,116,165,0.08);
+  padding: 8px 0;
+  z-index: 5;
+  min-width: 100px;
+}
+.menuBtn, .menuBtnDanger {
+  background: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  padding: 7px 0;
+  text-align: left;
+}
+.menuBtnDanger {
+  color: #ff5555;
+}
+.menuBtn {
+  color: #2274A5;
+}
+.kanbanTask {
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  padding: 10px 13px;
+  box-shadow: 0 2px 6px rgba(34,116,165,0.05);
+  font-size: 15px;
+  color: #222;
+  transition: box-shadow 0.14s;
+  cursor: grab;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.kanbanTask:active {
+  box-shadow: 0 2px 12px rgba(34,116,165,0.13);
+}
+.taskDelBtn {
+  background: none;
+  color: #888;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+.addTaskForm {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.addTaskBtn {
+  background: #2274A5;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 4px 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.cancelBtn {
+  background: #eee;
+  color: #222;
+  border: none;
+  border-radius: 5px;
+  padding: 4px 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.addTaskShowBtn {
+  background: #fff;
+  border: 1.5px dashed #bbb;
+  color: #2274A5;
+  border-radius: 7px;
+  padding: 7px 0;
+  width: 100%;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 15px;
+  margin-top: 10px;
+}
+.addColMainBtn {
+  background: #2274A5;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+.addColInputGroup {
+  margin-top: 12px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.addColBtn {
+  background: #32936F;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 17px;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+}
+.input {
+  font-size: 15px;
+  padding: 7px;
+  border-radius: 6px;
+  border: 1px solid #d8e3ed;
+}
+.saveBtn {
+  background: #32936F;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-weight: bold;
+  margin-right: 4px;
+}

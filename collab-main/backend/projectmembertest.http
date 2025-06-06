@@ -1,0 +1,20 @@
+### 팀원 추가
+POST http://localhost:5000/api/project-members/add
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NzEzNzc0MSwiZXhwIjoxNzQ3MTQxMzQxfQ.zuQVL18hlkTN0URJUP9TUCg09QcQ5dgujq5RZWYRALA
+
+{
+  "projectId": 3,
+  "userId": 3,
+  "role": "member"
+}
+
+### 팀원 삭제
+DELETE http://localhost:5000/api/project-members/remove
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0NzEzNzc0MSwiZXhwIjoxNzQ3MTQxMzQxfQ.zuQVL18hlkTN0URJUP9TUCg09QcQ5dgujq5RZWYRALA
+
+{
+  "projectId": 3,
+  "userId": 1
+}

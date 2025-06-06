@@ -1,0 +1,147 @@
+.dashboardContainer {
+  display: flex;
+  min-height: 100vh;
+  background: #eaf6ff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sidebar {
+  width: 300px;
+  background: #f0f8ff;
+  padding: 32px 24px;
+  border-right: 2px solid #d0e7ff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+.profileBox {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 18px 16px;
+  margin-bottom: 32px;
+  color: #007bff;
+}
+
+.profileBox h3 {
+  margin: 0 0 10px 0;
+  font-size: 22px;
+  letter-spacing: -1px;
+  color: #007bff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profileBox p {
+  margin: 4px 0;
+  color: #333;
+  font-size: 15px;
+}
+
+.logoutBtn {
+  background: #4da8ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 15px;
+  cursor: pointer;
+  transition: background 0.18s;
+  margin-left: 6px;
+}
+.logoutBtn:hover {
+  background: #1e90ff;
+}
+
+.projectsSection {
+  width: 100%;
+}
+
+.projectsTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 14px;
+  color: #007bff;
+}
+
+.projectsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.projectItem {
+  margin-bottom: 14px;
+}
+
+.projectButton {
+  width: 100%;
+  padding: 10px 0;
+  background: #4da8ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: background 0.2s;
+}
+
+.projectButton:hover {
+  background: #1e90ff;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+.createProjectBox {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.09);
+  padding: 36px 44px 28px 44px;
+  min-width: 350px;
+  width: 100%;
+  max-width: 430px;
+}
+
+.createProjectBox h3 {
+  color: #007bff;
+  margin-bottom: 22px;
+  font-size: 22px;
+}
+
+.createProjectForm input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #b6d5fa;
+  border-radius: 10px;
+  font-size: 16px;
+  background: #f6fbff;
+}
+
+.createProjectForm button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #4da8ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.createProjectForm button[type="submit"]:hover {
+  background-color: #1e90ff;
+}

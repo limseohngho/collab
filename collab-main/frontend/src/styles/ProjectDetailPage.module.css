@@ -1,0 +1,382 @@
+.container {
+  display: flex;
+  height: 100vh;
+  background: #eaf6ff;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 300px;
+  background: #f0f8ff;
+  padding: 32px 24px;
+  border-right: 2px solid #d0e7ff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 0;
+  height: 100vh;
+  box-sizing: border-box;
+}
+.profileBox {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 18px 16px;
+  margin-bottom: 32px;
+  color: #007bff;
+  position: relative;
+}
+.profileBox h3 {
+  margin: 0 0 10px 0;
+  font-size: 22px;
+  letter-spacing: -1px;
+  color: #007bff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.profileBox p {
+  margin: 4px 0;
+  color: #333;
+  font-size: 15px;
+}
+.logoutBtn {
+  background: #4da8ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 15px;
+  cursor: pointer;
+  transition: background 0.18s;
+  margin-left: 6px;
+}
+.logoutBtn:hover {
+  background: #1e90ff;
+}
+.projectsSection {
+  width: 100%;
+}
+.projectsTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 14px;
+  color: #007bff;
+}
+.projectsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.projectItem {
+  margin-bottom: 14px;
+}
+.selectedProject {
+  background: rgba(77, 168, 255, 0.09);
+  border-radius: 10px;
+}
+.projectButton {
+  width: 100%;
+  padding: 10px 0;
+  background: #4da8ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: background 0.2s;
+}
+.projectButton:hover,
+.selectedProject .projectButton {
+  background: #1e90ff;
+  font-weight: bold;
+}
+
+.mainContent {
+  flex: 2;
+  display: flex;
+  flex-direction: row;
+  padding: 36px 24px 24px 24px;
+  min-width: 0;
+  min-height: 0;
+  height: 100vh;
+  box-sizing: border-box;
+  gap: 32px;
+}
+
+.kanbanBoardSection {
+  flex: 2 1 0%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.kanbanBoard {
+  background: #F5F8FA;
+  border-radius: 16px;
+  padding: 32px 24px;
+  box-shadow: 0 2px 8px rgba(34, 116, 165, 0.07);
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+  align-self: stretch;
+  box-sizing: border-box;
+}
+
+.projectTitle {
+  margin-bottom: 8px;
+  color: #2274A5;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  line-height: 1.1;
+  text-shadow: 0 2px 8px rgba(34,116,165,0.08);
+}
+.projectDesc {
+  color: #32936F;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.saveBtn, .deleteBtn, .memberBtn {
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  transition: background 0.15s;
+  cursor: pointer;
+  margin-right: 6px;
+}
+.saveBtn {
+  background: #3182f6;
+  color: #fff;
+}
+.saveBtn:hover {
+  background: #2274A5;
+}
+.deleteBtn {
+  background: #e53e3e;
+  color: #fff;
+}
+.deleteBtn:hover {
+  background: #c53030;
+}
+.memberBtn {
+  background: #2274A5;
+  color: #fff;
+}
+.memberBtn:hover {
+  background: #174e74;
+}
+
+.kanbanColumn {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(34, 116, 165, 0.04);
+  padding: 16px;
+  min-width: 180px;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kanbanColumnTitle {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 18px;
+  border-bottom: 2px solid #dae5ef;
+  padding-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+.kanbanColumnTitle.todo {
+  color: #2274A5;
+  border-bottom-color: #2274A5;
+}
+.kanbanColumnTitle.in_progress {
+  color: #32936F;
+  border-bottom-color: #32936F;
+}
+.kanbanColumnTitle.done {
+  color: #FFA400;
+  border-bottom-color: #FFA400;
+}
+
+.kanbanTask {
+  background: #EDF3F6;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #222;
+  font-size: 15px;
+  box-shadow: 0 1px 2px rgba(34,116,165,0.03);
+  cursor: pointer;
+  transition: box-shadow 0.15s, background 0.15s;
+}
+.kanbanTask:active {
+  box-shadow: 0 2px 8px rgba(34,116,165,0.10);
+  background: #e6f0ff;
+}
+
+.addTaskForm {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+  align-items: center;
+}
+.input {
+  flex: 1;
+  border: 1px solid #dae5ef;
+  border-radius: 6px;
+  padding: 7px 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.18s;
+  min-width: 0;
+}
+.input:focus {
+  border-color: #2274A5;
+}
+.addTaskBtn {
+  background: #3182f6;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 18px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: auto;
+  height: 36px;
+  line-height: 1.2;
+  white-space: nowrap;
+  margin-left: 0;
+  margin-top: 0;
+  box-sizing: border-box;
+}
+.addTaskBtn:hover {
+  background: #2274A5;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.modalContent {
+  background: #fff;
+  padding: 28px 32px 18px 32px;
+  border-radius: 10px;
+  min-width: 320px;
+  box-shadow: 0 6px 24px rgba(34,116,165,0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.saveBtn {
+  background: #3182f6;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-right: 6px;
+}
+.saveBtn:hover {
+  background: #2274A5;
+}
+.deleteBtn {
+  background: #e53e3e;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-right: 6px;
+}
+.deleteBtn:hover {
+  background: #c53030;
+}
+.cancelBtn {
+  background: #e2e8f0;
+  color: #333;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.cancelBtn:hover {
+  background: #cbd5e1;
+}
+
+.calendarSidebarSection {
+  flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rightSidebar {
+  width: 100%;
+  max-width: none;
+  background: #f6fbff;
+  padding: 30px 20px 0 20px;
+  border-left: 2px solid #d0e7ff;
+  min-height: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.tabBar {
+  display: flex;
+  margin-bottom: 20px;
+}
+.tabButton {
+  flex: 1;
+  padding: 11px 0;
+  background: #eaf6ff;
+  color: #007bff;
+  border: none;
+  border-radius: 10px 10px 0 0;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.18s;
+}
+.tabButton:not(:last-child) {
+  margin-right: 4px;
+}
+.tabButton.active, .tabButton:active {
+  background: #4da8ff;
+  color: #fff;
+}
+.tabContent {
+  background: #fff;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 20px;
+  min-height: 120px;
+}
+.tabContent h3 {
+  color: #007bff;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
